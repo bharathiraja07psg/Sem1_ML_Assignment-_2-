@@ -15,7 +15,13 @@ from sklearn.metrics import (
     confusion_matrix,
     classification_report
 )
-
+# Backward compatibility shim for sklearn pipelines across version differences
+import sklearn.compose._column_transformer as _ct
+if not hasattr(_ct, "_RemainderColsList"):
+    class _RemainderColsList(list):
+        pass
+    _ct._RemainderColsList = _RemainderColsList
+    
 st.set_page_config(page_title="HCV Classification Dashboard", layout="wide")
 
 st.title("Hepatitis C Virus (HCV) - Classification & Model Evaluation")
