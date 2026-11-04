@@ -3,7 +3,6 @@
 ## a. Problem statement
 The objective of this project is to develop and evaluate five supervised machine learning classification models to predict whether an individual has liver disease (Hepatitis, Fibrosis, or Cirrhosis) or is a healthy control based on standard laboratory blood biomarkers and demographic factors. 
 
-Early, non-invasive detection of hepatic pathology using routine biochemical measurements is critical in clinical settings to identify patients at risk before irreversible liver fibrosis, end-stage cirrhosis, or liver failure occurs.
 
 ---
 
@@ -38,8 +37,8 @@ Early, non-invasive detection of hepatic pathology using routine biochemical mea
 ---
 
 ## c. Github Repository Link
-* **GitHub Repository URL:** [INSERT_YOUR_GITHUB_REPO_URL_HERE]
-* **Streamlit Live Deployment URL:** [INSERT_YOUR_STREAMLIT_APP_URL_HERE]
+* **GitHub Repository URL:** https://github.com/bharathiraja07psg/Sem1_ML_Assignment-_2-
+
 
 ---
 
