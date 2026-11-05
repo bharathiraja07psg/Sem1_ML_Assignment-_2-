@@ -15,20 +15,54 @@ from sklearn.metrics import (
     confusion_matrix,
     classification_report
 )
+
 # Backward compatibility shim for sklearn pipelines across version differences
 import sklearn.compose._column_transformer as _ct
 if not hasattr(_ct, "_RemainderColsList"):
     class _RemainderColsList(list):
         pass
     _ct._RemainderColsList = _RemainderColsList
-    
+
 st.set_page_config(page_title="HCV Classification Dashboard", layout="wide")
 
-st.title("Hepatitis C Virus (HCV) - Classification & Model Evaluation")
-st.markdown(
-    "This application evaluates pre-trained classification models on an uploaded test dataset. "
-    "Upload `test_data.csv` using the sidebar to view dynamic performance metrics and diagnostics."
-)
+# Custom CSS to eliminate whitespace and lock content to a single screen view
+st.markdown("""
+    <style>
+        .block-container {
+            padding-top: 1rem !important;
+            padding-bottom: 0.5rem !important;
+            padding-left: 2rem !important;
+            padding-right: 2rem !important;
+        }
+        h2 {
+            font-size: 1.4rem !important;
+            margin-bottom: 0.2rem !important;
+            padding-top: 0 !important;
+        }
+        h3 {
+            font-size: 1.05rem !important;
+            margin-bottom: 0.2rem !important;
+            padding-top: 0 !important;
+        }
+        p {
+            font-size: 0.85rem !important;
+            margin-bottom: 0.4rem !important;
+        }
+        div[data-testid="stMetricValue"] {
+            font-size: 1.5rem !important;
+        }
+        div[data-testid="stMetricLabel"] {
+            font-size: 0.8rem !important;
+        }
+        hr {
+            margin-top: 0.4rem !important;
+            margin-bottom: 0.4rem !important;
+        }
+    </style>
+""", unsafe_allow_html=True)
+
+st.markdown("## Hepatitis C Virus (HCV) - Classification & Model Evaluation")
+st.markdown("Evaluating pre-trained models on uploaded `test_data.csv`.")
 
 # 1. Sidebar Controls
 st.sidebar.header("Evaluation Controls")
@@ -82,7 +116,7 @@ if uploaded_file is not None:
                 f1 = f1_score(y_eval, y_pred, zero_division=0)
                 mcc = matthews_corrcoef(y_eval, y_pred)
 
-                st.subheader(f"Evaluation Metrics: {selected_model_name}")
+                st.markdown(f"### Performance: {selected_model_name}")
                 col1, col2, col3, col4, col5, col6 = st.columns(6)
                 col1.metric("Accuracy", f"{acc:.4f}")
                 col2.metric("AUC Score", f"{auc:.4f}" if not np.isnan(auc) else "N/A")
@@ -93,28 +127,32 @@ if uploaded_file is not None:
 
                 st.divider()
 
-                col_left, col_right = st.columns(2)
+                col_left, col_right = st.columns([1, 1.3])
 
                 with col_left:
-                    st.subheader("Confusion Matrix")
+                    st.markdown("### Confusion Matrix")
                     cm = confusion_matrix(y_eval, y_pred)
-                    fig, ax = plt.subplots(figsize=(4.5, 3.5))
+                    fig, ax = plt.subplots(figsize=(3.6, 2.4))
                     sns.heatmap(
                         cm, 
                         annot=True, 
                         fmt="d", 
                         cmap="Blues", 
+                        cbar=False,
+                        annot_kws={"size": 9},
                         xticklabels=["Healthy (0)", "Disease (1)"],
                         yticklabels=["Healthy (0)", "Disease (1)"],
                         ax=ax
                     )
-                    ax.set_xlabel("Predicted Label")
-                    ax.set_ylabel("True Label")
+                    ax.tick_params(labelsize=8)
+                    ax.set_xlabel("Predicted Label", fontsize=8)
+                    ax.set_ylabel("True Label", fontsize=8)
+                    plt.tight_layout(pad=0.5)
                     st.pyplot(fig)
                     plt.close(fig)
 
                 with col_right:
-                    st.subheader("Classification Report")
+                    st.markdown("### Classification Report")
                     report_dict = classification_report(
                         y_eval, 
                         y_pred, 
@@ -122,7 +160,7 @@ if uploaded_file is not None:
                         output_dict=True
                     )
                     report_df = pd.DataFrame(report_dict).transpose()
-                    st.dataframe(report_df.style.format("{:.3f}"), use_container_width=True)
+                    st.dataframe(report_df.style.format("{:.3f}"), height=190, use_container_width=True)
 
     except Exception as e:
         st.error(f"An error occurred while evaluating the dataset: {e}")
