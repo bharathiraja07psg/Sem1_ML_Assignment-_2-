@@ -25,44 +25,49 @@ if not hasattr(_ct, "_RemainderColsList"):
 
 st.set_page_config(page_title="HCV Classification Dashboard", layout="wide")
 
-# Custom CSS to eliminate whitespace and lock content to a single screen view
+# CSS to bring title into full view while preserving single-screen fit
 st.markdown("""
     <style>
         .block-container {
-            padding-top: 1rem !important;
+            padding-top: 2rem !important;
             padding-bottom: 0.5rem !important;
             padding-left: 2rem !important;
             padding-right: 2rem !important;
         }
-        h2 {
-            font-size: 1.4rem !important;
+        .main-title {
+            font-size: 1.5rem !important;
+            font-weight: 700 !important;
             margin-bottom: 0.2rem !important;
-            padding-top: 0 !important;
+            color: #FAFAFA;
         }
-        h3 {
-            font-size: 1.05rem !important;
-            margin-bottom: 0.2rem !important;
-            padding-top: 0 !important;
-        }
-        p {
+        .sub-desc {
             font-size: 0.85rem !important;
-            margin-bottom: 0.4rem !important;
+            margin-bottom: 0.5rem !important;
+            color: #A0AAB2;
+        }
+        .section-header {
+            font-size: 1.05rem !important;
+            font-weight: 600 !important;
+            margin-top: 0.2rem !important;
+            margin-bottom: 0.3rem !important;
+            color: #FAFAFA;
         }
         div[data-testid="stMetricValue"] {
-            font-size: 1.5rem !important;
+            font-size: 1.45rem !important;
         }
         div[data-testid="stMetricLabel"] {
             font-size: 0.8rem !important;
         }
         hr {
-            margin-top: 0.4rem !important;
-            margin-bottom: 0.4rem !important;
+            margin-top: 0.3rem !important;
+            margin-bottom: 0.3rem !important;
         }
     </style>
 """, unsafe_allow_html=True)
 
-st.markdown("## Hepatitis C Virus (HCV) - Classification & Model Evaluation")
-st.markdown("Evaluating pre-trained models on uploaded `test_data.csv`.")
+# Main Title & Description
+st.markdown('<div class="main-title">Hepatitis C Virus (HCV) - Classification & Model Evaluation</div>', unsafe_allow_html=True)
+st.markdown('<div class="sub-desc">Evaluating pre-trained models on uploaded <code>test_data.csv</code> to compute real-time metrics and diagnostic matrices.</div>', unsafe_allow_html=True)
 
 # 1. Sidebar Controls
 st.sidebar.header("Evaluation Controls")
@@ -116,7 +121,7 @@ if uploaded_file is not None:
                 f1 = f1_score(y_eval, y_pred, zero_division=0)
                 mcc = matthews_corrcoef(y_eval, y_pred)
 
-                st.markdown(f"### Performance: {selected_model_name}")
+                st.markdown(f'<div class="section-header">Performance: {selected_model_name}</div>', unsafe_allow_html=True)
                 col1, col2, col3, col4, col5, col6 = st.columns(6)
                 col1.metric("Accuracy", f"{acc:.4f}")
                 col2.metric("AUC Score", f"{auc:.4f}" if not np.isnan(auc) else "N/A")
@@ -127,12 +132,12 @@ if uploaded_file is not None:
 
                 st.divider()
 
-                col_left, col_right = st.columns([1, 1.3])
+                col_left, col_right = st.columns([1, 1.25])
 
                 with col_left:
-                    st.markdown("### Confusion Matrix")
+                    st.markdown('<div class="section-header">Confusion Matrix</div>', unsafe_allow_html=True)
                     cm = confusion_matrix(y_eval, y_pred)
-                    fig, ax = plt.subplots(figsize=(3.6, 2.4))
+                    fig, ax = plt.subplots(figsize=(3.4, 2.2))
                     sns.heatmap(
                         cm, 
                         annot=True, 
@@ -147,12 +152,12 @@ if uploaded_file is not None:
                     ax.tick_params(labelsize=8)
                     ax.set_xlabel("Predicted Label", fontsize=8)
                     ax.set_ylabel("True Label", fontsize=8)
-                    plt.tight_layout(pad=0.5)
+                    plt.tight_layout(pad=0.4)
                     st.pyplot(fig)
                     plt.close(fig)
 
                 with col_right:
-                    st.markdown("### Classification Report")
+                    st.markdown('<div class="section-header">Classification Report</div>', unsafe_allow_html=True)
                     report_dict = classification_report(
                         y_eval, 
                         y_pred, 
@@ -160,7 +165,7 @@ if uploaded_file is not None:
                         output_dict=True
                     )
                     report_df = pd.DataFrame(report_dict).transpose()
-                    st.dataframe(report_df.style.format("{:.3f}"), height=190, use_container_width=True)
+                    st.dataframe(report_df.style.format("{:.3f}"), height=175, use_container_width=True)
 
     except Exception as e:
         st.error(f"An error occurred while evaluating the dataset: {e}")
