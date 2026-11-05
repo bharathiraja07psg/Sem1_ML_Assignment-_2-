@@ -38,6 +38,7 @@ The objective of this project is to develop and evaluate five supervised machine
 
 ## c. Github Repository Link
 * **GitHub Repository URL:** https://github.com/bharathiraja07psg/Sem1_ML_Assignment-_2-
+* **Live Streamlit App:** https://jvb43gyhdkgd5gvbrzsffz.streamlit.app/
 
 
 ---
